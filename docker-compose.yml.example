@@ -1,0 +1,15 @@
+redeclipse-example:
+    build: .
+    ports:
+        - "0.0.0.0:28801:28801/udp"
+        - "0.0.0.0:28802:28802/udp"
+    environment:
+        ADMIN_PASS: "so-secret"
+        SERVER_TYPE: 1
+        SERVER_PORT: 28801
+        SV_SERVERCLIENTS: 16
+        SV_SERVERDESC: "Example server in Docker container"
+        SV_SERVERMOTD: "Welcome to this example server hosted in a Docker container!"
+        ENABLE_IRC: 1
+    volumes:
+        - ./maps/:/redeclipse/.redeclipse/maps/

@@ -1,0 +1,380 @@
+serverpass "{{ default .Env.SERVER_PASS "" }}"
+adminpass "{{ default .Env.ADMIN_PASS "" }}"
+
+{{  if (contains .Env "LOCALOP") }}
+{{ range $e := ( split .Env.LOCALOP "," ) }}{{ $a := (split $e ":") }}
+addlocalop {{ index $a 0 }} {{ index $a 1 }}{{ end }}
+{{ end }}
+
+{{  if (contains .Env "ADDBAN") }}
+{{ range $e := ( split .Env.ADDBAN "," ) }}
+addban {{ $e }}{{ end }}
+{{ end }}
+
+{{  if (contains .Env "ADDALLOW") }}
+{{ range $e := ( split .Env.ADDALLOW "," ) }}
+addallow {{ $e }}{{ end }}
+{{ end }}
+
+{{  if (contains .Env "ADDMUTE") }}
+{{ range $e := ( split .Env.ADDMUTE "," ) }}
+addmute {{ $e }}{{ end }}
+{{ end }}
+
+{{  if (contains .Env "ADDLIMIT") }}
+{{ range $e := ( split .Env.ADDLIMIT "," ) }}
+addlimit {{ $e }}{{ end }}
+{{ end }}
+
+//
+if (= $rehashing 0) [
+    servertype {{ default .Env.SERVER_TYPE "1" }} // type of server, "1" = private (does not register with masterserver), 2 = public, 3 = dedicated
+    // serveruprate 0 // maximum upload speed; cmdline: -suN
+    // serverip {{ default .Env.SERVER_IP "0.0.0.0" }} // host which server binds to; cmdline: -siN
+
+    servermaster {{ default .Env.SERVER_MASTER "play.redeclipse.net" }} // host server tries to use as master by default; cmdline: -smS
+    serverport {{ default .Env.SERVER_PORT "28801" }} // port which server binds to (you must open this port [UDP] and this plus one, default "28801" and 28802); cmdline: -spN
+    servermasterport  {{ default .Env.SERVER_MASTER_PORT "28800" }} // master server port which server *connects* to; cmdline: -saN
+
+    {{ if and (contains .Env "ENABLE_IRC") }}
+    ircfilter {{ default .Env.IRC_FILTER "1" }} // defines the way the colour-to-irc filter works; 0 = off, "1" = convert, 2 = strip
+
+    ircaddrelay ircrelay {{ default .Env.IRC_RELAY_HOSTNAME "localhost" }} {{ default .Env.IRC_RELAY_PORT "6667" }} {{ default .Env.IRC_RELAY_NICK "re-server" }}
+    {{ if (contains .Env "IRC_BIND_ADDRESS") }}
+    ircbind ircrelay {{ .Env.IRC_BIND_ADDRESS }} // use this only if you need to bind to a specific address, eg. multihomed machines
+    {{ end }}
+    {{ if (contains .Env "IRC_SERVER_PASS" ) }}
+    ircpass ircrelay {{ .Env.IRC_SERVER_PASS }} // some networks can use the PASS field to identify to nickserv
+    {{ end }}
+
+    {{  if and (contains .Env "IRC_CHANNELS") }}
+    {{ range $e := ( split .Env.IRC_CHANNELS "," ) }}
+    ircaddchan ircrelay "{{ $e }}"
+    ircrelaychan ircrelay "{{ $e }}" 3{{ end }}
+    {{ end }}
+
+
+    ircconnect ircrelay // and tell it to connect!
+    {{ end }}
+
+    // TODO: master
+    // THESE SETTINGS ARE FOR RUNNING A MASTER SERVER ONLY, DON'T USE THEM ON NORMAL SERVERS
+    // masterserver 0 // determines if the builtin master server is enabled or not; cmdline: -msN
+    // masterip "127.0.0.1" // host which master server binds to; cmdline: -miN
+    // masterport 28800 // port which master server binds to; cmdline: -mpN
+    // addauth handle flags pubkey email //add a user auth
+    // addserverauth handle flags pubkey email //add a server auth
+]
+
+// TODO
+//serverauthconnect 1 //determines if the server should attempt to auth
+//serveraccountname handle //server's auth handle
+//serveraccountpass privkey //server's private key
+//serverauthkey handle privkey //combines accountname and accountpass
+
+sv_aircoastscale {{ default .Env.SV_AIRCOASTSCALE "1.0" }}
+sv_airefreshdelay {{ default .Env.SV_AIREFRESHDELAY "1000" }}
+sv_allowlock {{ default .Env.SV_ALLOWLOCK "4" }}
+sv_allowmaps "{{ default .Env.SV_ALLOWMAPS "absorption abuse affluence ares bath battlefield biolytic bloodlust campgrounds canals canyon cargo castle center colony conflict condensation convolution cutec cyanide darkness deadsimple deathtrap decay decomposition deli depot dropzone dutility echo enyo erosion error escape futuresport ghost hinder institute keystone2k linear livefire longestyard mist neodrive nova octavus oneiroi panic processing pumpstation purge relax rooftop spacetech steelrat stone suspended testchamber tonatiuh tower tribal ubik vault venus wardepot warp wet" }}"
+sv_autoadmin {{ default .Env.SV_AUTOADMIN "0" }}
+sv_banlock {{ default .Env.SV_BANLOCK "4" }}
+sv_bleeddamage {{ default .Env.SV_BLEEDDAMAGE "3" }}
+sv_bleeddelay {{ default .Env.SV_BLEEDDELAY "1000" }}
+sv_bleedtime {{ default .Env.SV_BLEEDTIME "5500" }}
+sv_bomberattackreset {{ default .Env.SV_BOMBERATTACKRESET "1" }}
+sv_bomberbasketmindist {{ default .Env.SV_BOMBERBASKETMINDIST "48" }}
+sv_bomberbasketonly {{ default .Env.SV_BOMBERBASKETONLY "1" }}
+sv_bomberbuffdamage {{ default .Env.SV_BOMBERBUFFDAMAGE "1.25" }}
+sv_bomberbuffdelay {{ default .Env.SV_BOMBERBUFFDELAY "0.9" }}
+sv_bomberbuffing {{ default .Env.SV_BOMBERBUFFING "1" }}
+sv_bomberbuffshield {{ default .Env.SV_BOMBERBUFFSHIELD "1.25" }}
+sv_bombercarryspeed {{ default .Env.SV_BOMBERCARRYSPEED "0.9" }}
+sv_bombercarrytime {{ default .Env.SV_BOMBERCARRYTIME "15000" }}
+sv_bomberholdinterval {{ default .Env.SV_BOMBERHOLDINTERVAL "1000" }}
+sv_bomberholdlimit {{ default .Env.SV_BOMBERHOLDLIMIT "0" }}
+sv_bomberholdpenalty {{ default .Env.SV_BOMBERHOLDPENALTY "10" }}
+sv_bomberholdtime {{ default .Env.SV_BOMBERHOLDTIME "15000" }}
+sv_bomberlimit {{ default .Env.SV_BOMBERLIMIT "0" }}
+sv_bombermaps "{{ default .Env.SV_BOMBERMAPS "affluence ares battlefield canals canyon cargo center conflict condensation convolution darkness deathtrap deli depot dropzone dutility echo enyo erosion futuresport linear mist nova octavus pumpstation stone suspended tower tribal vault venus warp wet" }}"
+sv_bomberpickupdelay {{ default .Env.SV_BOMBERPICKUPDELAY "5000" }}
+sv_bomberregenbuff {{ default .Env.SV_BOMBERREGENBUFF "1" }}
+sv_bomberregendelay {{ default .Env.SV_BOMBERREGENDELAY "1000" }}
+sv_bomberregenextra {{ default .Env.SV_BOMBERREGENEXTRA "2" }}
+sv_bomberresetdelay {{ default .Env.SV_BOMBERRESETDELAY "15000" }}
+sv_botbalance {{ default .Env.SV_BOTBALANCE "-1" }}
+sv_botlimit {{ default .Env.SV_BOTLIMIT "32" }}
+sv_botscale {{ default .Env.SV_BOTSCALE "1.0" }}
+sv_botskillmax {{ default .Env.SV_BOTSKILLMAX "75" }}
+sv_botskillmin {{ default .Env.SV_BOTSKILLMIN "60" }}
+sv_burndamage {{ default .Env.SV_BURNDAMAGE "3" }}
+sv_burndelay {{ default .Env.SV_BURNDELAY "1000" }}
+sv_burntime {{ default .Env.SV_BURNTIME "5500" }}
+sv_capturebuffdamage {{ default .Env.SV_CAPTUREBUFFDAMAGE "1.25" }}
+sv_capturebuffdelay {{ default .Env.SV_CAPTUREBUFFDELAY "3000" }}
+sv_capturebuffing {{ default .Env.SV_CAPTUREBUFFING "9" }}
+sv_capturebuffshield {{ default .Env.SV_CAPTUREBUFFSHIELD "1.25" }}
+sv_capturecarryspeed {{ default .Env.SV_CAPTURECARRYSPEED "0.9" }}
+sv_capturedefenddelay {{ default .Env.SV_CAPTUREDEFENDDELAY "15000" }}
+sv_capturelimit {{ default .Env.SV_CAPTURELIMIT "0" }}
+sv_capturemaps "{{ default .Env.SV_CAPTUREMAPS "affluence ares bath battlefield biolytic canals canyon center colony conflict condensation convolution darkness deadsimple deli depot dropzone dutility echo enyo erosion futuresport institute keystone2k linear mist nova octavus panic pumpstation stone suspended tribal vault venus warp wet" }}"
+sv_capturepickupdelay {{ default .Env.SV_CAPTUREPICKUPDELAY "2500" }}
+sv_captureprotectdelay {{ default .Env.SV_CAPTUREPROTECTDELAY "15000" }}
+sv_captureregenbuff {{ default .Env.SV_CAPTUREREGENBUFF "1" }}
+sv_captureregendelay {{ default .Env.SV_CAPTUREREGENDELAY "1000" }}
+sv_captureregenextra {{ default .Env.SV_CAPTUREREGENEXTRA "2" }}
+sv_captureresetdelay {{ default .Env.SV_CAPTURERESETDELAY "30000" }}
+sv_captureresetpenalty {{ default .Env.SV_CAPTURERESETPENALTY "3500" }}
+sv_captureteampenalty {{ default .Env.SV_CAPTURETEAMPENALTY "7500" }}
+sv_coopbalance {{ default .Env.SV_COOPBALANCE "1.5" }}
+sv_coopmultibalance {{ default .Env.SV_COOPMULTIBALANCE "2.0" }}
+sv_coopskillmax {{ default .Env.SV_COOPSKILLMAX "85" }}
+sv_coopskillmin {{ default .Env.SV_COOPSKILLMIN "75" }}
+sv_crclock {{ default .Env.SV_CRCLOCK "8" }}
+sv_damagescale {{ default .Env.SV_DAMAGESCALE "1.0" }}
+sv_damageself {{ default .Env.SV_DAMAGESELF "1" }}
+sv_damageteam {{ default .Env.SV_DAMAGETEAM "1" }}
+sv_deadpushscale {{ default .Env.SV_DEADPUSHSCALE "2.0" }}
+sv_defaultmap "{{ default .Env.SV_DEFAULTMAP "" }}"
+sv_defaultmode {{ default .Env.SV_DEFAULTMODE "2" }}
+sv_defaultmuts {{ default .Env.SV_DEFAULTMUTS "0" }}
+sv_defendbuffdamage {{ default .Env.SV_DEFENDBUFFDAMAGE "1.25" }}
+sv_defendbuffdelay {{ default .Env.SV_DEFENDBUFFDELAY "1000" }}
+sv_defendbuffing {{ default .Env.SV_DEFENDBUFFING "1" }}
+sv_defendbuffshield {{ default .Env.SV_DEFENDBUFFSHIELD "1.25" }}
+sv_defendhold {{ default .Env.SV_DEFENDHOLD "100" }}
+sv_defendinterval {{ default .Env.SV_DEFENDINTERVAL "50" }}
+sv_defendking {{ default .Env.SV_DEFENDKING "100" }}
+sv_defendlimit {{ default .Env.SV_DEFENDLIMIT "0" }}
+sv_defendmaps "{{ default .Env.SV_DEFENDMAPS "affluence ares bath battlefield biolytic campgrounds canals canyon cargo center colony conflict condensation convolution cutec darkness deadsimple deathtrap decay deli depot dropzone dutility echo enyo erosion futuresport ghost institute keystone2k linear livefire mist nova octavus panic processing rooftop stone suspended tower tribal ubik vault venus warp wet" }}"
+sv_defendoccupy {{ default .Env.SV_DEFENDOCCUPY "100" }}
+sv_defendpoints {{ default .Env.SV_DEFENDPOINTS "1" }}
+sv_defendregenbuff {{ default .Env.SV_DEFENDREGENBUFF "1" }}
+sv_defendregendelay {{ default .Env.SV_DEFENDREGENDELAY "1000" }}
+sv_defendregenextra {{ default .Env.SV_DEFENDREGENEXTRA "2" }}
+sv_demoautorec {{ default .Env.SV_DEMOAUTOREC "1" }}
+sv_demoautoserversave {{ default .Env.SV_DEMOAUTOSERVERSAVE "0" }}
+sv_democount {{ default .Env.SV_DEMOCOUNT "5" }}
+sv_demolock {{ default .Env.SV_DEMOLOCK "4" }}
+sv_demomaxsize {{ default .Env.SV_DEMOMAXSIZE "16" }}
+sv_demoserverkeeptime {{ default .Env.SV_DEMOSERVERKEEPTIME "86400" }}
+sv_dominatecount {{ default .Env.SV_DOMINATECOUNT "5" }}
+sv_duelclear {{ default .Env.SV_DUELCLEAR "1" }}
+sv_duelcooloff {{ default .Env.SV_DUELCOOLOFF "5000" }}
+sv_duelcycle {{ default .Env.SV_DUELCYCLE "2" }}
+sv_duelcycles {{ default .Env.SV_DUELCYCLES "2" }}
+sv_duelmaps "{{ default .Env.SV_DUELMAPS "abuse bath bloodlust campgrounds canyon cargo castle darkness deadsimple dutility echo error ghost livefire longestyard mist panic stone vault wet" }}"
+sv_duelprotect {{ default .Env.SV_DUELPROTECT "5000" }}
+sv_duelreset {{ default .Env.SV_DUELRESET "1" }}
+sv_editlock {{ default .Env.SV_EDITLOCK "4" }}
+sv_enemybalance {{ default .Env.SV_ENEMYBALANCE "1" }}
+sv_enemyskillmax {{ default .Env.SV_ENEMYSKILLMAX "80" }}
+sv_enemyskillmin {{ default .Env.SV_ENEMYSKILLMIN "65" }}
+sv_enemyspawndelay {{ default .Env.SV_ENEMYSPAWNDELAY "1000" }}
+sv_enemyspawnstyle {{ default .Env.SV_ENEMYSPAWNSTYLE "1" }}
+sv_enemyspawntime {{ default .Env.SV_ENEMYSPAWNTIME "30000" }}
+sv_floodlines {{ default .Env.SV_FLOODLINES "5" }}
+sv_floodlock {{ default .Env.SV_FLOODLOCK "4" }}
+sv_floodmute {{ default .Env.SV_FLOODMUTE "3" }}
+sv_floodtime {{ default .Env.SV_FLOODTIME "10000" }}
+sv_floorcoastscale {{ default .Env.SV_FLOORCOASTSCALE "1.0" }}
+sv_gamepaused {{ default .Env.SV_GAMEPAUSED "0" }}
+sv_gamespeed {{ default .Env.SV_GAMESPEED "100" }}
+sv_gamespeedlock {{ default .Env.SV_GAMESPEEDLOCK "5" }}
+sv_gravityscale {{ default .Env.SV_GRAVITYSCALE "1.0" }}
+sv_hitpushscale {{ default .Env.SV_HITPUSHSCALE "1.0" }}
+sv_hitstunscale {{ default .Env.SV_HITSTUNSCALE "1.0" }}
+sv_holdmaps "{{ default .Env.SV_HOLDMAPS "affluence ares bath battlefield biolytic campgrounds canals canyon cargo center colony conflict condensation convolution cutec darkness deadsimple deathtrap decay deli depot dropzone dutility echo enyo erosion futuresport ghost keystone2k linear mist nova octavus panic pumpstation stone suspended tower tribal ubik vault venus warp wet" }}"
+sv_impulseallowed {{ default .Env.SV_IMPULSEALLOWED "15" }}
+sv_impulseboost {{ default .Env.SV_IMPULSEBOOST "1.0" }}
+sv_impulsecost {{ default .Env.SV_IMPULSECOST "5000" }}
+sv_impulsecount {{ default .Env.SV_IMPULSECOUNT "6" }}
+sv_impulsedash {{ default .Env.SV_IMPULSEDASH "1.3" }}
+sv_impulsedelay {{ default .Env.SV_IMPULSEDELAY "250" }}
+sv_impulsejump {{ default .Env.SV_IMPULSEJUMP "1.1" }}
+sv_impulselimit {{ default .Env.SV_IMPULSELIMIT "0.0" }}
+sv_impulsemelee {{ default .Env.SV_IMPULSEMELEE "0.75" }}
+sv_impulsemeter {{ default .Env.SV_IMPULSEMETER "30000" }}
+sv_impulseparkour {{ default .Env.SV_IMPULSEPARKOUR "1.0" }}
+sv_impulseregen {{ default .Env.SV_IMPULSEREGEN "5.0" }}
+sv_impulseregencrouch {{ default .Env.SV_IMPULSEREGENCROUCH "2.5" }}
+sv_impulseregeninair {{ default .Env.SV_IMPULSEREGENINAIR "0.75" }}
+sv_impulseregenmove {{ default .Env.SV_IMPULSEREGENMOVE "1.0" }}
+sv_impulseregenpacing {{ default .Env.SV_IMPULSEREGENPACING "0.75" }}
+sv_impulseregenslide {{ default .Env.SV_IMPULSEREGENSLIDE "0.0" }}
+sv_impulseskate {{ default .Env.SV_IMPULSESKATE "1000" }}
+sv_impulseslide {{ default .Env.SV_IMPULSESLIDE "1000" }}
+sv_impulsespeed {{ default .Env.SV_IMPULSESPEED "90.0" }}
+sv_impulsespread {{ default .Env.SV_IMPULSESPREAD "1.0" }}
+sv_impulsestyle {{ default .Env.SV_IMPULSESTYLE "1" }}
+sv_inairspread {{ default .Env.SV_INAIRSPREAD "2.0" }}
+sv_instadelay {{ default .Env.SV_INSTADELAY "3000" }}
+sv_instaprotect {{ default .Env.SV_INSTAPROTECT "3000" }}
+sv_instaweapon {{ default .Env.SV_INSTAWEAPON "8" }}
+sv_intermlimit {{ default .Env.SV_INTERMLIMIT "15000" }}
+sv_itemsallowed {{ default .Env.SV_ITEMSALLOWED "2" }}
+sv_itemspawndelay {{ default .Env.SV_ITEMSPAWNDELAY "1000" }}
+sv_itemspawnstyle {{ default .Env.SV_ITEMSPAWNSTYLE "1" }}
+sv_itemspawntime {{ default .Env.SV_ITEMSPAWNTIME "15000" }}
+sv_itemthreshold {{ default .Env.SV_ITEMTHRESHOLD "2.0" }}
+sv_jumpspeed {{ default .Env.SV_JUMPSPEED "110.0" }}
+sv_kamikaze {{ default .Env.SV_KAMIKAZE "1" }}
+sv_kicklock {{ default .Env.SV_KICKLOCK "3" }}
+sv_kickpushcrouch {{ default .Env.SV_KICKPUSHCROUCH "0.0" }}
+sv_kickpushscale {{ default .Env.SV_KICKPUSHSCALE "1.0" }}
+sv_kickpushsway {{ default .Env.SV_KICKPUSHSWAY "0.0125" }}
+sv_kickpushzoom {{ default .Env.SV_KICKPUSHZOOM "0.125" }}
+sv_kingmaps "{{ default .Env.SV_KINGMAPS "ares bath battlefield biolytic campgrounds canals canyon cargo center colony conflict condensation darkness depot dropzone dutility echo enyo linear livefire octavus processing pumpstation rooftop stone suspended tribal ubik vault venus" }}"
+sv_limitlock {{ default .Env.SV_LIMITLOCK "3" }}
+sv_liquidcoastscale {{ default .Env.SV_LIQUIDCOASTSCALE "1.0" }}
+sv_liquidspeedscale {{ default .Env.SV_LIQUIDSPEEDSCALE "1.0" }}
+sv_mainmaps "{{ default .Env.SV_MAINMAPS "abuse affluence ares bath battlefield biolytic bloodlust campgrounds canals canyon cargo castle center colony conflict condensation convolution cutec darkness deadsimple deathtrap decay deli depot dropzone dutility echo enyo erosion error futuresport ghost institute keystone2k linear livefire longestyard mist nova octavus oneiroi panic processing pumpstation rooftop spacetech stone suspended tower tribal ubik vault venus warp wet" }}"
+sv_maphistory {{ default .Env.SV_MAPHISTORY "5" }}
+sv_mapslock {{ default .Env.SV_MAPSLOCK "4" }}
+sv_maxcarry {{ default .Env.SV_MAXCARRY "2" }}
+sv_maxhealth {{ default .Env.SV_MAXHEALTH "1.5" }}
+sv_maxhealthvampire {{ default .Env.SV_MAXHEALTHVAMPIRE "3.0" }}
+sv_modelock {{ default .Env.SV_MODELOCK "4" }}
+sv_modelockfilter {{ default .Env.SV_MODELOCKFILTER "60" }}
+sv_movecrawl {{ default .Env.SV_MOVECRAWL "0.6" }}
+sv_moveinair {{ default .Env.SV_MOVEINAIR "0.9" }}
+sv_moverun {{ default .Env.SV_MOVERUN "1.3" }}
+sv_movespeed {{ default .Env.SV_MOVESPEED "125.0" }}
+sv_movespread {{ default .Env.SV_MOVESPREAD "1.0" }}
+sv_movestepdown {{ default .Env.SV_MOVESTEPDOWN "1.15" }}
+sv_movestepup {{ default .Env.SV_MOVESTEPUP "0.95" }}
+sv_movestrafe {{ default .Env.SV_MOVESTRAFE "1.0" }}
+sv_movestraight {{ default .Env.SV_MOVESTRAIGHT "1.2" }}
+sv_multikilldelay {{ default .Env.SV_MULTIKILLDELAY "5000" }}
+sv_multimaps "{{ default .Env.SV_MULTIMAPS "canals condensation convolution deadsimple depot keystone2k suspended warp" }}"
+sv_mutelock {{ default .Env.SV_MUTELOCK "3" }}
+sv_mutslockfilter {{ default .Env.SV_MUTSLOCKFILTER "131071" }}
+sv_mutslockforce {{ default .Env.SV_MUTSLOCKFORCE "0" }}
+sv_overtimeallow {{ default .Env.SV_OVERTIMEALLOW "1" }}
+sv_overtimelimit {{ default .Env.SV_OVERTIMELIMIT "5" }}
+sv_pointlimit {{ default .Env.SV_POINTLIMIT "0" }}
+sv_radiallimited {{ default .Env.SV_RADIALLIMITED "0.75" }}
+sv_radialscale {{ default .Env.SV_RADIALSCALE "1.0" }}
+sv_regendelay {{ default .Env.SV_REGENDELAY "3000" }}
+sv_regenhealth {{ default .Env.SV_REGENHEALTH "5" }}
+sv_regentime {{ default .Env.SV_REGENTIME "1000" }}
+sv_resetallowsonend {{ default .Env.SV_RESETALLOWSONEND "1" }}
+sv_resetbansonend {{ default .Env.SV_RESETBANSONEND "1" }}
+sv_resetlimitsonend {{ default .Env.SV_RESETLIMITSONEND "1" }}
+sv_resetmmonend {{ default .Env.SV_RESETMMONEND "2" }}
+sv_resetmutesonend {{ default .Env.SV_RESETMUTESONEND "1" }}
+sv_resetvarsonend {{ default .Env.SV_RESETVARSONEND "1" }}
+sv_rotatecycle {{ default .Env.SV_ROTATECYCLE "10" }}
+sv_rotatemaps {{ default .Env.SV_ROTATEMAPS "2" }}
+sv_rotatemapsfilter {{ default .Env.SV_ROTATEMAPSFILTER "2" }}
+sv_rotatemode {{ default .Env.SV_ROTATEMODE "1" }}
+sv_rotatemodefilter {{ default .Env.SV_ROTATEMODEFILTER "60" }}
+sv_rotatemuts {{ default .Env.SV_ROTATEMUTS "3" }}
+sv_rotatemutsfilter {{ default .Env.SV_ROTATEMUTSFILTER "258" }}
+sv_serverclients {{ default .Env.SV_SERVERCLIENTS "16" }}
+sv_serverdesc "{{ default .Env.SV_SERVERDESC "My server" }}"
+sv_servermotd "{{ default .Env.SV_SERVERMOTD "Welcome to my server!" }}"
+sv_serveropen {{ default .Env.SV_SERVEROPEN "3" }}
+sv_shockdamage {{ default .Env.SV_SHOCKDAMAGE "2" }}
+sv_shockdelay {{ default .Env.SV_SHOCKDELAY "1000" }}
+sv_shocktime {{ default .Env.SV_SHOCKTIME "5500" }}
+sv_slidecoastscale {{ default .Env.SV_SLIDECOASTSCALE "1.0" }}
+sv_spawndelay {{ default .Env.SV_SPAWNDELAY "1.0" }}
+sv_spawneditlock {{ default .Env.SV_SPAWNEDITLOCK "3" }}
+sv_spawngrenades {{ default .Env.SV_SPAWNGRENADES "0" }}
+sv_spawnhealth {{ default .Env.SV_SPAWNHEALTH "100" }}
+sv_spawnmines {{ default .Env.SV_SPAWNMINES "0" }}
+sv_spawnprotect {{ default .Env.SV_SPAWNPROTECT "3000" }}
+sv_spawnrotate {{ default .Env.SV_SPAWNROTATE "2" }}
+sv_spawnweapon {{ default .Env.SV_SPAWNWEAPON "1" }}
+sv_speclock {{ default .Env.SV_SPECLOCK "3" }}
+sv_spreecount {{ default .Env.SV_SPREECOUNT "5" }}
+sv_stillspread {{ default .Env.SV_STILLSPREAD "0.0" }}
+sv_teambalance {{ default .Env.SV_TEAMBALANCE "1" }}
+sv_timelimit {{ default .Env.SV_TIMELIMIT "10" }}
+sv_trialdelay {{ default .Env.SV_TRIALDELAY "500" }}
+sv_trialdelayex {{ default .Env.SV_TRIALDELAYEX "3000" }}
+sv_trialmaps "{{ default .Env.SV_TRIALMAPS "absorption cyanide decomposition escape hinder neodrive purge relax steelrat testchamber tonatiuh wardepot" }}"
+sv_trialweapon {{ default .Env.SV_TRIALWEAPON "0" }}
+sv_varslock {{ default .Env.SV_VARSLOCK "4" }}
+sv_vetolock {{ default .Env.SV_VETOLOCK "4" }}
+sv_voteinterm {{ default .Env.SV_VOTEINTERM "2" }}
+sv_votelimit {{ default .Env.SV_VOTELIMIT "45000" }}
+sv_votelock {{ default .Env.SV_VOTELOCK "4" }}
+sv_votestyle {{ default .Env.SV_VOTESTYLE "2" }}
+sv_votewait {{ default .Env.SV_VOTEWAIT "2500" }}
+sv_wavepushscale {{ default .Env.SV_WAVEPUSHSCALE "1.0" }}
+
+sv_teamneutralcolour {{ default .Env.SV_TEAMNEUTRALCOLOUR "0x90A090" }}
+
+//
+// weapon variables are in the form of sv_<weapon><attribute>[1|2], where weapon is the name of the weapon
+//  attribute is one of the following attributes, and 1|2 applies if the attribute differs between primary and secondary
+//
+//  name: displayed name for the weapon in-game
+//  modes: bitmask of game modes in which this weapon is allowed (if positive), or disallowed (if negative), see $modebit list above
+//  muts: bitmask of mutators in which this weapon is allowed (if positive), or disallowed (if negative), see $mutsbit list above
+//  ammoadd: the amount added when picking up the weapon or reloading it
+//  ammomax: the maximum amount the clip of this weapon can hold
+//  ammosub[1|2]: the amount taken from the clip for each firing action, set to zero for unlimited ammo
+//  delayattack[1|2]: the time it takes after each firing action for the weapon to be ready again
+//  delayreload: the time it takes for the weapon to reload one 'add' unit
+//  damage[1|2]: the amount of damage a projectile from each firing action does
+//  speed[1|2]: the speed of a projectile from each firing action
+//  power[1|2]: when more than zero, determines that the weapon can be 'cooked' this long before firing
+//  time[1|2]: the maximum lifetime of a projectile for each firing action
+//  proxdelay[1|2]: when more than zero, projectiles from this weapon will be delayed this long
+//  guideddelay[1|2]: when more than zero, projectiles from this weapon will delay guided settings by this long
+//  escapedelay[1|2]: when more than zero, projectiles from this weapon will not be able to hurt its owner for this long
+//  explode[1|2]: if more than zero, a projectile from this firing action will explode at the end of its life or based on collision settings
+//  rays[1|2]: the amount of projectiles spawned from one shot of each firing action
+//  spread[1|2]: determines the amount a projectile from each firing action skews off-center
+//  spreadz[1|2]: when zero, keeps spread projectiles aligned horizontally, else divide the z axis this much
+//  aiskew[1|2]: determines 'added stupidity' for each weapon for AI counterparts
+//  fragweap[1|2]: when projectiles from this firing action are destroyed, create projectiles from this kind of weapon (+10 = alt fire for the weapon)
+//  flakdamage[1|2]: flak of this type deals this much damage
+//  fragrays[1|2]: when creating flak, create this many projectiles for it
+//  fragtime[1|2]: flak projectiles from this weapon last this long
+//  fragspeed[1|2]: flak projectiles from this weapon start with this much speed (may be influenced by flakspread/flakskew and flakrel)
+//  collide[1|2]: bitwise value which determines collision properties for a projectile from each firing action
+//      IMPACT_GEOM = 1     BOUNCE_GEOM = 2     IMPACT_PLAYER = 4   BOUNCE_PLAYER = 8   RADIAL_PLAYER = 16  COLLIDE_TRACE = 32  COLLIDE_OWNER = 64  COLLIDE_CONT = 128  COLLIDE_STICK = 256
+//  extinguish[1|2]: determines if a projectile from each firing action is extinguished by water
+//  cooked[1|2]: determines what happens the longer a weapon is cooked (bitmask): 0 = cannot be cooked, 1 = projectile becomes bigger, 2 = projectile becomes smaller, 4 = projectile lasts longer, 8 = projectile disappears sooner, 16 = projectile moves faster, 32 = projectile moves slower, 64 = create extra projectiles, 128 = switch to scope view before shooting (this last one applies to secondary fire only)
+//  guided[1|2]: determines guided style for a projectile, 0 = off, 1 = follow crosshair, 2 = home crosshair target (+1 only first target), 4 = home projectile target (+1 only first target)
+//  radial[1|2]: boolean 0 or 1, sets a projectile for each firing action to do continuous radial damage inside the 'explode' radius during transit
+//  residual[1|2]: determines if a projectile from each firing action has one or more residual effects, 0 = off, 1 = burns, 2 = bleeds, 4 = shocks
+//  residualundo[1|2]: determines if a projectile can put out the residual effects above
+//  fullauto[1|2]: boolean 0 or 1, determines if each firing action is fully automatic (click-and-hold) or not (click-and-click)
+//  disabled: determines if this weapon type is allowed to be used at all
+//  laser: determines if this weapon has a laser pointer which is projected to the point where the player is aiming
+//  taperin[1|2]: determines the maximum amount a projectile from each firing action is allowed to 'taper in' to over its lifetime
+//  taperout[1|2]: determines the maximum amount a projectile from each firing action is allowed to 'taper out' to over its lifetime
+//  elasticity[1|2]: multiplier of velocity for a projectile of each firing action when doing a bounce event
+//  reflectivity[1|2]: guard angle for a projectile of each firing action when doing a bounce event
+//  relativity[1|2]: multiplier of player velocity added to a projectile of each firing action
+//  waterfric[1|2]: multiplier of velocity for a projectile of each firing action when in water
+//  weight[1|2]: relative weight for a projectile of each firing action
+//  radius[1|2]: determines the size for a projectile of each firing action
+//  kickpush[1|2]: determines the amount of pushback from shooting each firing action
+//  hitpush[1|2]: determines the amount of pushback from getting hit by this projectile
+//  slow[1|2]: slow target hit with a projectile from this by this ammount
+//  aidist[1|2]: determines the 'maximum distance' a weapon can be shot at, used by AI to determine weapon effectiveness ranges
+//  partsize[1|2]: determines the maximum particle size of a projectile from each firing action
+//  partlen[1|2]: determines the maximum tape particle length of a projectile from each firing action
+//  frequency: determines the multiplier of itemspawntime in which items of this type respawn in
+//  wavepush[1|2]: determines the multiplier of explode radius this weapon pushes in
+//  delta[1|2]: determines the amount by which each firing action is guided
+//  trace[1|2]: determines the multiplier of length to apply to traced weapons
+//  damagehead[1|2]: determines the multiplier of damage for head shots
+//  damagetorso[1|2]: determines the multiplier of damage for torso shots
+//  damagelegs[1|2]: determines the multiplier of damage for leg shots
+//  damageself[1|2]: determines whether this weapon can hit the player who fired it
+//  damageteam[1|2]: determines whether this weapon can hit teammates of the player who fired it
+//  damagepenalty[1|2]: determines whether team-kills caused by this weapon should result in point loss
+//  fragscale[1|2]: flak created by this firing action is scaled by this much
+//  fragspread[1|2]: flak created by this firing action spreads its direction randomly by this much if it doesn't impact a player
+//  fragrel[1|2]: flak created by this firing action retains this much of its parent relative momentum
+//  fragoffset[1|2]: flak created by this firing action is offset by this distance if it impacts a player before being created
+//  fragskew[1|2]: flak created by this firing action spreads its direction randomly by this much when it impacts a player
+//  wavepush[1|2]: flak determines the multiplier of explode radius this weapon pushes in
+//
+// EOF
