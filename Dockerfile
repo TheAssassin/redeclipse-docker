@@ -14,6 +14,7 @@ RUN apk update && \
     cd /redeclipse && \
     git checkout v1.5.3 && \
     git submodule update && \
+    rm -r .git && \
     patch -p1 < /patches/duelmaxqueued.patch && \
     patch -p1 < /patches/fix_ircfilter.patch && \
     cd src && \
