@@ -9,10 +9,8 @@ RUN apk update && \
     apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
 
-RUN git clone --recursive https://github.com/red-eclipse/base /redeclipse && \
+RUN git clone --recursive --branch v1.5.3 https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
-    git checkout v1.5.3 && \
-    git submodule update && \
     rm -r .git && \
     patch -p1 < /patches/duelmaxqueued.patch && \
     patch -p1 < /patches/fix_ircfilter.patch && \
