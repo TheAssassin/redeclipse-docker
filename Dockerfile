@@ -6,7 +6,7 @@ ADD ./repatches/duelmaxqueued.patch /patches/duelmaxqueued.patch
 ADD ./repatches/fix_ircfilter.patch /patches/fix_ircfilter.patch
 
 RUN apk update && \
-    apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev && \
+    apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
 
 RUN git clone --recursive https://github.com/red-eclipse/base /redeclipse && \
@@ -32,5 +32,7 @@ USER redeclipse
 EXPOSE 28799/udp 28800/udp 28801/udp 28802/udp
 
 ENV REDECLIPSE_BRANCH inplace
+
+ENTRYPOINT ["/sbin/tini", "--"]
 
 CMD dockerize -template /servinit.tmpl:/redeclipse/.redeclipse/servinit.cfg /redeclipse/redeclipse_server.sh
