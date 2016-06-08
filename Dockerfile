@@ -7,10 +7,9 @@ ADD ./repatches/fix_ircfilter.patch /patches/fix_ircfilter.patch
 
 RUN apk update && \
     apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev && \
-    wget https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize-linux-amd64-v0.2.0.tar.gz -O dockerize.tar.gz && \
-    [[ "$(sha256sum dockerize.tar.gz | cut -d' ' -f1)" == "c0e2e33cfe066036941bf8f2598090bd8e01fdc05128490238b2a64cf988ecfb" ]] && echo "SHA256 checksum OK" || exit 1; \
-    tar -C /usr/local/bin -xzvf dockerize.tar.gz && \
-    git clone --recursive https://github.com/red-eclipse/base /redeclipse && \
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
+
+RUN git clone --recursive https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
     git checkout v1.5.3 && \
     git submodule update && \
