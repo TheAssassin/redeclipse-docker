@@ -7,7 +7,7 @@ ADD ./repatches/fix_ircfilter.patch /patches/fix_ircfilter.patch
 
 RUN apk update && \
     apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
-    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize psmisc
 
 RUN git clone --recursive --branch v1.5.3 https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
