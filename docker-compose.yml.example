@@ -1,5 +1,6 @@
 redeclipse-example:
     build: .
+    restart: unless-stopped
     ports:
         - "0.0.0.0:28801:28801/udp"
         - "0.0.0.0:28802:28802/udp"
