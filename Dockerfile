@@ -2,21 +2,23 @@ FROM alpine:3.4
 
 MAINTAINER "TheAssassin <theassassin@users.noreply.github.com>"
 
-ADD ./repatches/duelmaxqueued.patch /patches/duelmaxqueued.patch
-ADD ./repatches/fix_ircfilter.patch /patches/fix_ircfilter.patch
-
 RUN apk update && \
-    apk add gcc g++ sdl-dev zlib-dev sdl_mixer-dev sdl_image-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
-    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize psmisc
+    apk add gcc g++ sdl2-dev zlib-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ dockerize && \
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ psmisc
 
-RUN git clone --recursive --branch v1.5.3 https://github.com/red-eclipse/base /redeclipse && \
+# Build SDL_mixer and SDL_image this way until there are packages for Alpine Linux
+RUN wget -O- https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.tar.gz | tar xz && \
+    wget -O- https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.tar.gz | tar xz && \
+    cd /SDL2_image-2.0.1 && ./configure --prefix /usr && make -j $(cat /proc/cpuinfo  | grep processor | wc -l) install && \
+    cd /SDL2_mixer-2.0.1 && ./configure --prefix /usr && make -j $(cat /proc/cpuinfo  | grep processor | wc -l) install
+
+RUN git clone --recursive --branch stable https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
     rm -r .git && \
-    patch -p1 < /patches/duelmaxqueued.patch && \
-    patch -p1 < /patches/fix_ircfilter.patch && \
     cd src && \
     make clean && \
-    make -j $(cat /proc/cpuinfo  | grep processor | wc -l) && \
+    make -j $(cat /proc/cpuinfo  | grep processor | wc -l) redeclipse_server_linux && \
     make install && \
     mkdir -p /redeclipse/.redeclipse/ && \
     adduser -S -D -h /redeclipse redeclipse && \
