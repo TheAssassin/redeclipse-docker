@@ -12,7 +12,7 @@ RUN wget -O- https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.
     cd /SDL2_image-2.0.1 && ./configure --prefix /usr && make -j $(cat /proc/cpuinfo  | grep -c processor) install && \
     cd /SDL2_mixer-2.0.1 && ./configure --prefix /usr && make -j $(cat /proc/cpuinfo  | grep -c processor) install
 
-RUN git clone --recursive --branch v1.5.6 https://github.com/red-eclipse/base /redeclipse && \
+RUN git clone --recursive --branch stable https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
     rm -r .git && \
     cd src && \
