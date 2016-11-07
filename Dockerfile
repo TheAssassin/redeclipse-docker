@@ -7,8 +7,9 @@ RUN apk update && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ sdl2_image-dev sdl2_mixer-dev && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ dockerize psmisc
 
-RUN git clone --recursive --branch stable https://github.com/red-eclipse/base /redeclipse && \
+RUN git clone --branch stable https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
+    git submodule update --init -- data/maps && \
     cd src && \
     make clean && \
     make -j $(cat /proc/cpuinfo  | grep -c processor) redeclipse_server_linux && \
