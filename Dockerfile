@@ -9,7 +9,6 @@ RUN apk update && \
 
 RUN git clone --recursive --branch stable https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
-    rm -r .git && \
     cd src && \
     make clean && \
     make -j $(cat /proc/cpuinfo  | grep -c processor) redeclipse_server_linux && \
@@ -19,6 +18,7 @@ RUN git clone --recursive --branch stable https://github.com/red-eclipse/base /r
     chown redeclipse: -R /redeclipse
 
 ADD ./servinit.tmpl /servinit.tmpl
+ADD ./run.sh /run.sh
 
 WORKDIR /redeclipse
 USER redeclipse
@@ -29,4 +29,4 @@ ENV REDECLIPSE_BRANCH inplace
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD dockerize -template /servinit.tmpl:/redeclipse/.redeclipse/servinit.cfg /redeclipse/redeclipse_server.sh
+CMD dockerize -template /servinit.tmpl:/redeclipse/.redeclipse/servinit.cfg /run.sh
