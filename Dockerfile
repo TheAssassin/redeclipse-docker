@@ -12,7 +12,7 @@ RUN git clone --branch stable https://github.com/red-eclipse/base /redeclipse &&
     git submodule update --init -- data/maps && \
     cd src && \
     make clean && \
-    make -j $(cat /proc/cpuinfo  | grep -c processor) redeclipse_server_linux && \
+    make -j$(nproc) redeclipse_server_linux && \
     make install && \
     mkdir -p /redeclipse/.redeclipse/ && \
     adduser -S -D -h /redeclipse redeclipse && \
