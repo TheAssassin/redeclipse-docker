@@ -14,8 +14,8 @@ Thanks to [zaquest](https://github.com/zaquest/) for his
 Dockerfile uses the backport of the `/duelmaxqueued` setting and the fix for the IRC relay's
 colour filter.
 
-At the moment the Dockerfile builds Red Eclipse v1.5.3 which is the latest stable version that
-has been released.
+At the moment the Dockerfile builds the latest stable version that has been released. It is
+designed to be rebuilt on every release (or actually update to the `stable` branch).
 
 
 ## Usage
@@ -35,6 +35,12 @@ follow as soon as possible.
 
 If you want to host more than one server, you should clone this repository as often as you
 need and repeat the steps listed above.
+
+The container attempts to update the relevant submodules (i.e. the map data) when the container
+is started. To regularly update these data, just restart the container regularly. If you use the
+Docker option `--restart=unless-stopped` (as configured in `docker-compose.yml`), you can use
+the bundled shell script `send-shutdown-signal.sh` to make the server shut down as soon as
+there's no more players connected and let Docker restart the container.
 
 
 ## License
