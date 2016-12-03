@@ -5,7 +5,8 @@ MAINTAINER "TheAssassin <theassassin@users.noreply.github.com>"
 RUN apk update && \
     apk add gcc g++ sdl2-dev zlib-dev perl git wget ca-certificates coreutils make mesa-dev musl-dev glu-dev tini && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ sdl2_image-dev sdl2_mixer-dev && \
-    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ dockerize psmisc
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ psmisc && \
+    apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
 
 RUN git clone --branch stable https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
