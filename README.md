@@ -22,7 +22,8 @@ designed to be rebuilt on every release (or actually update to the `stable` bran
 
 The easiest way to persist server configurations and manage your server containers is to use
 [docker-compose](https://docs.docker.com/compose/). An example `docker-compose.yml` is included
-in this repository.
+in this repository. In combination with the pre-built images from quay.io, this is the fastest
+way to deploy new servers.
 
 To use it, just copy it (e.g. `cp docker-compose.yml.example docker-compose.yml`), edit it to
 fit your needs and run `docker-compose up`.
@@ -45,7 +46,7 @@ there's no more players connected and let Docker restart the container.
 
 ## License
 
-Copyright (c) 2016 TheAssassin
+Copyright (c) 2016-2017 TheAssassin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

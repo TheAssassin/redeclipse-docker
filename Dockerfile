@@ -8,26 +8,28 @@ RUN apk update && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ psmisc && \
     apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ dockerize
 
-RUN git clone --branch stable https://github.com/red-eclipse/base /redeclipse && \
+ARG BRANCH="stable"
+ARG COMMIT=""
+
+RUN mkdir /redeclipse
+WORKDIR /redeclipse
+
+RUN git clone --branch "$BRANCH" https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
+    [ "$COMMIT" != "" ] && git checkout "$COMMIT" && \
     git submodule update --init -- data/maps && \
-    cd src && \
-    make clean && \
-    make -j$(nproc) redeclipse_server_linux && \
-    make install && \
+    make -C src -j"$(nproc)" redeclipse_server_linux install && \
     mkdir -p /redeclipse/.redeclipse/ && \
     adduser -S -D -h /redeclipse redeclipse && \
-    chown redeclipse: -R /redeclipse
+    chown redeclipse: -R /redeclipse && \
+    rm -rf /redeclipse/.git
 
 ADD ./servinit.tmpl /servinit.tmpl
 ADD ./run.sh /run.sh
 
-WORKDIR /redeclipse
 USER redeclipse
 
 EXPOSE 28799/udp 28800/udp 28801/udp 28802/udp
-
-ENV REDECLIPSE_BRANCH inplace
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
