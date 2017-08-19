@@ -16,7 +16,7 @@ WORKDIR /redeclipse
 
 RUN git clone --branch "$BRANCH" https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
-    [ "$COMMIT" != "" ] && git checkout "$COMMIT" && \
+    ([ "$COMMIT" != "" ] && git checkout "$COMMIT" || true) && \
     git submodule update --init -- data/maps && \
     make -C src -j"$(nproc)" redeclipse_server_linux install && \
     mkdir -p /redeclipse/.redeclipse/ && \
