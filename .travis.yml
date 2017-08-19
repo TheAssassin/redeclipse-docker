@@ -1,0 +1,9 @@
+sudo: required
+language: cpp
+
+services:
+  - docker
+
+before_install:
+  - docker login -u "$QUAY_USER" -p "$QUAY_PASS" quay.io
+  - bash build.sh
