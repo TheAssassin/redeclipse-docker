@@ -6,4 +6,7 @@ services:
 
 before_install:
   - docker login -u "$QUAY_USER" -p "$QUAY_PASS" quay.io
-  - bash build.sh
+  - bash build.sh --push
+
+script:
+  - true
