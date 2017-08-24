@@ -23,7 +23,8 @@ designed to be rebuilt on every release (or actually update to the `stable` bran
 The easiest way to persist server configurations and manage your server containers is to use
 [docker-compose](https://docs.docker.com/compose/). An example `docker-compose.yml` is included
 in this repository. In combination with the pre-built images from quay.io, this is the fastest
-way to deploy new servers.
+way to deploy new servers. The pre-built images are built by a Travis cron job which runs once
+a day, thus, updates are available within one day.
 
 To use it, just copy it (e.g. `cp docker-compose.yml.example docker-compose.yml`), edit it to
 fit your needs and run `docker-compose up`.
