@@ -10,7 +10,7 @@ else
     BRANCHES=( "master" "stable" )
 fi
 
-for branch in "${BRANCHES}"; do
+for branch in "${BRANCHES[@]}"; do
     # to allow for checking whether the relevant commit is on the registry already
     export BRANCH="$branch"
     # set the commit
