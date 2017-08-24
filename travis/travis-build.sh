@@ -14,7 +14,7 @@ for branch in "${BRANCHES[@]}"; do
     # to allow for checking whether the relevant commit is on the registry already
     export BRANCH="$branch"
     # set the commit
-    export COMMIT="${COMMIT:=$(curl -s https://api.github.com/repos/red-eclipse/base/commits/$branch | jq -r '.sha')}"
+    export COMMIT=$(curl -s https://api.github.com/repos/red-eclipse/base/commits/"$BRANCH" | jq -r '.sha')
 
     # then, check whether it's a cron build
     if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
