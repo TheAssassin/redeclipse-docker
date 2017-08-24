@@ -14,7 +14,7 @@ for branch in "${BRANCHES}"; do
     # to allow for checking whether the relevant commit is on the registry already
     export BRANCH="$branch"
     # set the commit
-     export COMMIT="${COMMIT:=$(curl -s https://api.github.com/repos/red-eclipse/base/commits/$branch | jq -r '.sha')}"
+    export COMMIT="${COMMIT:=$(curl -s https://api.github.com/repos/red-eclipse/base/commits/$branch | jq -r '.sha')}"
 
     # then, check whether it's a cron build
     if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
@@ -31,5 +31,5 @@ for branch in "${BRANCHES}"; do
     # thus, we can build and push the image
     # if the build is triggered externally, the override is probably intentional, e.g. when
     # this repository has been updated, and an older tag needs to be updated asap
-    exec bash build.sh --push
+    exec bash -x build.sh --push
 done
