@@ -23,7 +23,7 @@ for branch in "${BRANCHES}"; do
         # unnecessary updates for users who update regularly
         if curl --silent https://quay.io/v1/repositories/theassassin/redeclipse/tags | grep -q "$COMMIT"; then
             echo "Image for commit $COMMIT exists on registry -- skipping build"
-            exit 0
+            continue
         fi
     fi
 
