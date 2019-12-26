@@ -2,9 +2,9 @@
 
 cd /redeclipse
 
-echo "### UPDATING... ###"
-git pull --rebase
-git submodule update -- data/maps
+#echo "### UPDATING... ###"
+#git pull --rebase
+#git submodule update -- data/maps
 
 export REDECLIPSE_BRANCH=inplace
 
