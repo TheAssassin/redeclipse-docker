@@ -1,2 +1,5 @@
 maps/
 docker-compose.yml
+*.save
+*.swp
+servinit.cfg
