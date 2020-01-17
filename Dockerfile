@@ -13,8 +13,10 @@ ARG COMMIT=""
 RUN mkdir /redeclipse
 WORKDIR /redeclipse
 
+ADD serverip.patch /serverip.patch
 RUN git clone --branch "$BRANCH" https://github.com/red-eclipse/base /redeclipse && \
     cd /redeclipse && \
+    git apply < /serverip.patch && \
     ([ "$COMMIT" != "" ] && git checkout "$COMMIT" || true) && \
     git submodule update --init -- data/maps && \
     make -C src -j"$(nproc)" redeclipse_server_linux install && \
