@@ -127,8 +127,8 @@ def make_additional_vars_section():
     {{ end -}}
     {{ end -}}
 
-    {{ if (contains .Env "SV_DUELMAXQUEUED" -}}
-    sv_duelmaxqueued "${{ .Env.SV_DUELMAXQUEUED }}""
+    {{ if (contains .Env "SV_DUELMAXQUEUED") -}}
+    sv_duelmaxqueued "${{ .Env.SV_DUELMAXQUEUED }}"
     {{ end -}}
     """
     )
