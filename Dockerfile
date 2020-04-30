@@ -14,7 +14,7 @@ RUN mkdir /redeclipse
 WORKDIR /redeclipse
 
 ADD serverip.patch /serverip.patch
-RUN git clone --branch "$BRANCH" https://github.com/red-eclipse/base /redeclipse && \
+RUN git clone --branch "$BRANCH" https://github.com/redeclipse-legacy/base /redeclipse && \
     cd /redeclipse && \
     git apply < /serverip.patch && \
     ([ "$COMMIT" != "" ] && git checkout "$COMMIT" || true) && \
