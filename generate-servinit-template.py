@@ -117,21 +117,33 @@ def make_irc_section():
 
 
 def make_additional_vars_section():
-    return textwrap.dedent(
-    """
-    {{ if (contains .Env "ADDITIONAL_VARS") -}}
-    // additional variables
-    {{ range $e := (split .Env.ADDITIONAL_VARS ";") -}}
-    {{ $a := (split $e "=") -}}
-    {{ index $a 0 }} {{ index $a 1 }}
-    {{ end -}}
-    {{ end -}}
+    text = textwrap.dedent(
+        """
+        {{ if (contains .Env "ADDITIONAL_VARS") -}}
+        // additional variables
+        {{ range $e := (split .Env.ADDITIONAL_VARS ";") -}}
+        {{ $a := (split $e "=") -}}
+        {{ index $a 0 }} {{ index $a 1 }}
+        {{ end -}}
+        {{ end -}}
 
-    {{ if (contains .Env "SV_DUELMAXQUEUED") -}}
-    sv_duelmaxqueued "{{ .Env.SV_DUELMAXQUEUED }}"
-    {{ end -}}
-    """
+        {{ if (contains .Env "SV_DUELMAXQUEUED") -}}
+        sv_duelmaxqueued "{{ .Env.SV_DUELMAXQUEUED }}"
+        {{ end -}}
+        """
     )
+
+    for i in ["duelmaxqueued", "teamneutralcolour"]:
+        pass
+        text += textwrap.dedent(
+            """
+            {{{{ if (contains .Env "SV_{upper}") -}}}}
+            sv_{lower} "{{{{ .Env.SV_{upper} }}}}"
+            {{{{ end -}}}}
+            """.format(lower=i, upper=i.upper())
+        )
+
+    return text
 
 
 def main():
